@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: ChattingService
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pethub
+    username: root
+    password: 1234  # DB 비밀번호 추가
+  jpa:
+    database: mysql
+
+  cloud:
+    config:
+      uri: http://localhost:8888
+
+  config:
+    import: "configserver:http://localhost:8888"
+  profiles:
+    active: prod
+
+
+server:
+  port: 8085

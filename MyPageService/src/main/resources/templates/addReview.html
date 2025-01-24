@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+	<h3>리뷰 작성하기</h3>
+	
+	<div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <article>
+                    <input type="hidden" id="reviewId" th:value="${reviewId}">
+
+                    <header class="mb-4">
+                        <input type="text" class="form-control" placeholder="병원 이름" id="hospitalName" th:value="${review.hospitalName}">
+                        <input type="text" class="form-control" placeholder="방문 날짜" id="visitDate" th:value="${review.visitDate}">
+                        <input type="text" class="form-control" placeholder="평점" id="rating" th:value="${review.rating}">
+                    </header>
+                    <section class="mb-5">
+                        <textarea class="form-control h-25" rows="10" placeholder="리뷰" id="text" th:text="${review.text}"></textarea>
+                    </section>
+                    <button th:if="${review.reviewId} != null" type="button" id="modify-btn" class="btn btn-primary btn-sm">수정</button>
+                    <button th:if="${review.reviewId} == null" type="button" id="create-btn" class="btn btn-primary btn-sm">등록</button>
+                </article>
+            </div>
+        </div>
+    </div>
+
+	<script src="/js/article.js"></script>
+</body>
+</html>

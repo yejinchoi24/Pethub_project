@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: service01
+  cloud:
+    config:
+      uri: http://localhost:8888  # Config Server 주소
+#      label: main  # Git 저장소의 브랜치 또는 label
+#                   # ConfigSever >> application.yml에서 default-label: main
+
+server:
+  port: 8081
+
+resilience4j:
+  # 지연 시간
+  timelimiter:
+    configs:
+      default:
+        cancel-running-future: true
+        timeout-duration: 3s    #  3초 내에 응답이 오지 않으면 타임아웃을 발생 >> 실패로 판단
+  # 실패율
+  circuitbreaker:
+    configs:
+      default:
+        failureRateThreshold: 51    # 실패율이 50% 이상이면 Open으로 전환
+        slidingWindowSize: 5    # 최근 요청 5개의 실패율을 계산
+        slidingWindowType: COUNT_BASED    # 시간기반이 아닌 요청 수(slidingWindowSize) 기준으로 실패율 계산
+        minimumNumberOfCalls: 3    # 실패율을 계산하기 위한 최소 호출 횟수 >> 3번 미만의 요청에는 실패율을 계산X
+        waitDurationInOpenState: 10s    # Open일 때, 5초 기다린 후 자동으로 Half-open으로 전환
+        permittedNumberOfCallsInHalfOpenState: 3    # Half-Open일 때, 3개의 요청의 결과에 따라 Open할지 Closed할지 결정
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # 모두에게 endpoint 노출한다
+  endpoint:
+    health:
+      show-details: always  # 상세내역을 보여준다

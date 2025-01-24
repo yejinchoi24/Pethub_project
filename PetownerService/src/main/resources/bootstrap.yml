@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: PetownerService
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pethub
+    username: root
+    password: 1234
+  jpa:
+    database: mysql
+
+  config:
+    import: "configserver:http://localhost:8888"
+  profiles:
+    active: prod
+
+
+server:
+  port: 8084

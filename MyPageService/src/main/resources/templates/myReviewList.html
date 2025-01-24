@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+	<h3>작성한 리뷰 리스트</h3>
+
+    <div class="row-6" th:each="review : ${reviews}">
+        <div class="card">
+            <div class="card-header" th:text="|병원 : ${review.hospitalName} &nbsp;&nbsp;&nbsp;&nbsp; 방문 날짜 : ${review.visitDate}|"></div>
+            <div class="card-body">
+                <h5 class="card-title" th:text="|☆ ${review.rating}|"></h5>
+                <p class="card-text" th:text="${review.text}"></p>
+                <a th:href="@{/myPage/myReviews/{reviewId}(reviewId=${review.reviewId})}" class="btn btn-primary">자세히 보기</a>
+            </div>
+        </div>
+        <br>
+    </div>
+    
+    <script src="/js/article.js"></script>
+</body>
+</html>

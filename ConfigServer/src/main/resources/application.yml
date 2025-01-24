@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: ConfigServer
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Pethubteam/MSA_Config  # 설정 파일이 있는 git 레퍼지토리 주소
+#          search-paths:   # Github Repository 안의 설정 파일들이 위치한 경로
+          default-label: main  # 설정한 Github Repository에서 설정 파일이 위치하는 브랜치
+          username: pig5977@skuniv.ac.kr
+          password: #내 개인계정 토큰 
+#  profiles:
+##    active: native
+#    active: git
+
+management: # actuator 설정
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+
+eureka:
+  instance:
+    non-secure-port: ${server.port}
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8888

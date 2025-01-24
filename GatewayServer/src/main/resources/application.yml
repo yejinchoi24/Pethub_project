@@ -1,0 +1,142 @@
+spring:
+  application:
+    name: GatewayServer
+
+  config:
+    import: "configserver:http://localhost:8888"  # Config Server의 주소
+  profiles:
+
+    active: prod  # 프로파일 설정
+
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter  # 모든 필터의 시작 & 마지막에 종료됨
+          args:
+            baseMessage: Spring Cloud Gateway GlobalFilter
+            preLogger: true
+            postLogger: true
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':  # 모든 경로에 대해 CORS 설정 적용
+            allowedOrigins: "http://localhost:3000"  # React 애플리케이션의 URL로 설정
+            allowedMethods: "*"  # 모든 HTTP 메서드 허용
+            allowedHeaders: "*"  # 모든 헤더 허용
+            allowCredentials: true  # 인증 정보 허용
+
+      routes:
+        # -------------------------------------------------------------------------
+        # 마이페이지 관련 라우트
+        - id: myPage
+          uri: lb://MYPAGESERVICE
+          predicates:
+            - Path=/api/mypage/**
+        # -------------------------------------------------------------------------
+        # 병원 서비스 경로 - PetService
+        - id: hospital-pet-service
+          uri: lb://HOSPITALSERVICE
+          predicates:
+            - Path=/api/pets/**
+        # 병원 서비스 경로 - VaccinationService
+        - id: hospital-vaccination-service
+          uri: lb://HOSPITALSERVICE
+          predicates:
+            - Path=/api/vaccination/**
+        # 병원 서비스 경로 - 병원 관련 경로
+        - id: hospital-main-service
+          uri: lb://HOSPITALSERVICE
+          predicates:
+            - Path=/hospitals/**
+        # -------------------------------------------------------------------------
+        # 응급 병원 서비스 경로 추가
+        - id: emergency-hospital-service
+          uri: lb://HOSPITALSERVICE
+          predicates:
+            - Path=/hospitals/emergency-hospitals/**
+          filters:
+            - name: AddRequestHeader
+              args:
+                name: X-Request-Source
+                value: GatewayServer
+        # -------------------------------------------------------------------------
+        # 리뷰2 관련 라우팅 추가
+        - id: review2-service
+          uri: lb://MYPAGESERVICE
+          predicates:
+            - Path=/api/reviews2/**
+          filters:
+            - name: AddRequestHeader
+              args:
+                name: X-Request-Source
+                value: GatewayServer
+        # -------------------------------------------------------------------------
+        # 회원가입 및 로그인 관련 라우트
+        - id: petowner-signup
+          uri: lb://PETOWNERSERVICE
+          predicates:
+            - Path=/api/petowner/**
+        # -------------------------------------------------------------------------
+        - id: auth-service
+          uri: lb://PETOWNERSERVICE
+          predicates:
+            - Path=/api/auth/**
+        # -------------------------------------------------------------------------
+        # 병원 서비스 FeignClient 경로
+        - id: hospital-feign
+          uri: lb://HOSPITALSERVICE
+          predicates:
+            - Path=/api/hospital/**
+        # -------------------------------------------------------------------------
+        # 찜한 병원 보기
+        - id: hospital-like
+          uri: lb://MYPAGESERVICE
+          predicates:
+            - Path=/api/likehospital/**
+        # -------------------------------------------------------------------------
+        # MyPage 서비스 Actuator 경로
+        - id: mypage-actuator
+          uri: lb://MYPAGESERVICE
+          predicates:
+            - Path=/actuator/**
+        # -------------------------------------------------------------------------
+
+        # PetService 추가
+        - id: pet-service
+          uri: lb://PETSERVICE
+          predicates:
+            - Path=/api/pet/**
+        # -------------------------------------------------------------------------
+        # VaccinationService 추가
+        - id: vaccination-service
+          uri: lb://VACCINATIONSERVICE
+          predicates:
+            - Path=/api/vaccination/**
+        # -------------------------------------------------------------------------
+
+        - id: chatting
+          uri: lb://CHATTINGSERVICE
+          predicates:
+            - Path=/api/chatting/**
+        # -------------------------------------------------------------------------
+        - id: chatting
+          uri: lb://CHATTINGSERVICE
+          predicates:
+            - Path=/api/medicalItems/**
+        # -------------------------------------------------------------------------
+        - id: hospital-medicalItems
+          uri: lb://HOSPITALSERVICE
+          predicates:
+            - Path=/api/hospital-medicalItems/**
+
+
+eureka:
+  instance:
+    non-secure-port: ${server.port}
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8765
